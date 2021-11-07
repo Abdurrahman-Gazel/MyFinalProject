@@ -36,29 +36,29 @@ namespace Business.Concrete
         {
             if (DateTime.Now.Hour==22)
             {
-                return new ErrorDataResult();
+                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
-            return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(),true,"Urunler listelendi");
+            return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(),Messages.ProductsListed);
         }
 
-        public List<Product> GetAllByCategoryId(int id)
+        public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
-            return _ProductDal.GetAll(p=>p.CategoryId==id);
+            return new SuccessDataResult<List<Product>>(_ProductDal.GetAll(p=>p.CategoryId==id));
         }
 
         public IDataResult<Product> GetById(int producyId)
         {
-            return _ProductDal.Get(p => p.ProductId == producyId);
+            return new SuccessDataResult<Product>(_ProductDal.Get(p => p.ProductId == producyId));
         }
 
         public IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max)
         {
-            return _ProductDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max);
+            return new SuccessDataResult<List<Product>>( _ProductDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max));
         }
 
         public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
-            return _ProductDal.GetProductDetails();
+            return new SuccessDataResult<List<ProductDetailDto>>( _ProductDal.GetProductDetails());
         }
     }
 }
