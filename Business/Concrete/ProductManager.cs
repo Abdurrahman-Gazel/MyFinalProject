@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -27,9 +28,14 @@ namespace Business.Concrete
         public IResult Add(Product product)
         {
 
-            _ProductDal.Add(product);
+            if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success)
+            {
+                _ProductDal.Add(product);
 
-            return new SuccessResult(Messages.ProductAdded);
+                return new SuccessResult(Messages.ProductAdded);
+            }
+            return new ErrorResult();
+            
         }
 
         public IDataResult<List<Product>> GetAll()
@@ -60,5 +66,21 @@ namespace Business.Concrete
         {
             return new SuccessDataResult<List<ProductDetailDto>>( _ProductDal.GetProductDetails());
         }
+
+        public IResult Update(Product product)
+        {
+            throw new NotImplementedException();
+        }
+
+        private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
+        {
+            var result = _ProductDal.GetAll(p => p.CategoryId == categoryId).Count;
+            if (result >= 15)
+            {
+                return new ErrorResult(Messages.ProductCountOfCategoryError);
+            }
+            return new SuccessResult();
+        }
+
     }
 }
