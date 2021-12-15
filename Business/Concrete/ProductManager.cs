@@ -46,6 +46,8 @@ namespace Business.Concrete
             
         }
 
+
+        [CasheAspect]
         public IDataResult<List<Product>> GetAll()
         {
             if (DateTime.Now.Hour == 1)
